@@ -1,6 +1,48 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
+<head><!-- Google Analytics: loads only after analytics consent -->
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
+(function(){
+ const id='G-0CXF3C6QQK',key='viclutch-analytics-choice-v1';
+ let loaded=false;
+ function readChoice(){try{const c=JSON.parse(localStorage.getItem(key));return c&&c.expires>Date.now()?c.value:null}catch{return null}}
+ function start(){
+  if(loaded)return;
+  loaded=true;window['ga-disable-'+id]=false;
+  gtag('consent','update',{analytics_storage:'granted'});
+  gtag('js',new Date());
+  gtag('config',id,{allow_google_signals:false,allow_ad_personalization_signals:false});
+  const tag=document.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+id;tag.id='viclutch-google-tag';document.head.appendChild(tag);
+ }
+ function setChoice(allowed){
+  try{localStorage.setItem(key,JSON.stringify({value:allowed?'allow':'deny',expires:Date.now()+180*86400000}))}catch{}
+  document.getElementById('analytics-choice').hidden=true;
+  if(allowed){start();return}
+  window['ga-disable-'+id]=true;
+  document.cookie.split(';').forEach(item=>{
+   const name=item.trim().split('=')[0];
+   if(name==='_ga'||name.startsWith('_ga_')){
+    const hosts=['',location.hostname,'.'+location.hostname];
+    hosts.forEach(host=>document.cookie=name+'=; Max-Age=0; path=/'+(host?'; domain='+host:'')+'; SameSite=Lax');
+   }
+  });
+  if(loaded)location.reload();
+ }
+ if(readChoice()==='allow')start();
+ document.addEventListener('DOMContentLoaded',()=>{
+  const banner=document.getElementById('analytics-choice');
+  banner.hidden=readChoice()!==null;
+  document.getElementById('analytics-allow').addEventListener('click',()=>setChoice(true));
+  document.getElementById('analytics-deny').addEventListener('click',()=>setChoice(false));
+  document.getElementById('analytics-settings').addEventListener('click',()=>{
+   banner.hidden=false;document.getElementById('analytics-allow').focus();
+  });
+ });
+})();
+</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080d16">
 <title>ViCLUTCH｜杉戸町のサッカースクール・パーソナルレッスン</title>
@@ -50,7 +92,7 @@
 @keyframes button-glint{from{left:-80%}to{left:140%}}
 @keyframes scroll-line{50%{transform:scaleX(.5);opacity:.4}}
 @media(max-width:760px){.hero{padding:46px 0 36px}.hero .wrap{grid-template-columns:1fr;gap:22px}.hero h1{font-size:clamp(33px,8.4vw,52px);margin:22px 0}.hero .actions{display:grid;grid-template-columns:1fr;margin:25px 0 5px}.hero-art{margin:12px auto 0;width:min(80%,340px)}.hero-art img{max-height:none}.hero-art figcaption{left:-20px;bottom:20px;padding:10px 16px}.hero-bottom{margin-top:12px;gap:20px;justify-content:start}.scroll-cue{display:none}.hero:after,.hero:before{display:none}}
-@media(prefers-reduced-motion:reduce){.hero *{animation:none!important}.reveal-ready{opacity:1;transform:none}.btn:hover,.program:hover{transform:none}} .lesson-categories{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.lesson-categories{grid-template-columns:1fr}}.training-film{margin-bottom:36px}.training-film video{display:block;width:100%;height:auto;background:#080d16;border:1px solid #dab97855}.training-gallery{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}.training-gallery figure{margin:0}.training-gallery img{display:block;width:100%;height:auto}.training-gallery figcaption{padding:12px 0;color:var(--gold);font-size:14px}.hero-art{align-self:center}.hero-art img{aspect-ratio:16/11;object-fit:cover}.hero-art figcaption{position:relative;left:auto;bottom:auto;margin:0 -10px 0 10px}.training-gallery figure{animation:opening-rise .9s both}@media(max-width:600px){.training-gallery{grid-template-columns:1fr}.hero-art{width:95%}.hero-art img{aspect-ratio:16/9}.hero-art figcaption{padding:12px}.hero-art figcaption strong{font-size:12px}}@media(prefers-reduced-motion:reduce){.training-gallery figure{animation:none}}.category-photo{display:block;width:100%;height:auto;margin-bottom:20px}.individual-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.individual-gallery{grid-template-columns:1fr}}.supporter-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:start}@media(max-width:760px){.supporter-grid{grid-template-columns:1fr}}</style>
+@media(prefers-reduced-motion:reduce){.hero *{animation:none!important}.reveal-ready{opacity:1;transform:none}.btn:hover,.program:hover{transform:none}} .lesson-categories{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.lesson-categories{grid-template-columns:1fr}}.training-film{margin-bottom:36px}.training-film video{display:block;width:100%;height:auto;background:#080d16;border:1px solid #dab97855}.training-gallery{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}.training-gallery figure{margin:0}.training-gallery img{display:block;width:100%;height:auto}.training-gallery figcaption{padding:12px 0;color:var(--gold);font-size:14px}.hero-art{align-self:center}.hero-art img{aspect-ratio:16/11;object-fit:cover}.hero-art figcaption{position:relative;left:auto;bottom:auto;margin:0 -10px 0 10px}.training-gallery figure{animation:opening-rise .9s both}@media(max-width:600px){.training-gallery{grid-template-columns:1fr}.hero-art{width:95%}.hero-art img{aspect-ratio:16/9}.hero-art figcaption{padding:12px}.hero-art figcaption strong{font-size:12px}}@media(prefers-reduced-motion:reduce){.training-gallery figure{animation:none}}.category-photo{display:block;width:100%;height:auto;margin-bottom:20px}.individual-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.individual-gallery{grid-template-columns:1fr}}.supporter-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:start}@media(max-width:760px){.supporter-grid{grid-template-columns:1fr}}#analytics-choice[hidden]{display:none}#analytics-choice{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;width:min(94%,960px);background:#101b2c;border:1px solid #dab97877;box-shadow:0 12px 50px #0009;padding:20px 24px;display:flex;gap:24px;align-items:center}#analytics-choice strong{color:var(--gold)}#analytics-choice p{font-size:12px;line-height:1.8;margin:5px 0 0}.analytics-buttons{display:flex;gap:10px;flex-shrink:0}.analytics-buttons button{cursor:pointer;font-family:inherit;font-size:13px;padding:10px 16px;min-height:44px;background:transparent;color:var(--text)}.analytics-buttons button.primary{background:var(--gold);color:var(--bg)}.privacy-settings{border:0;background:transparent;color:var(--gold);text-decoration:underline;font:inherit;font-size:13px;cursor:pointer;margin-top:16px;padding:8px 0}@media(max-width:760px){#analytics-choice{bottom:calc(70px + env(safe-area-inset-bottom));padding:16px;display:block;max-height:65vh;overflow:auto}.analytics-buttons{margin-top:12px}.analytics-buttons button{flex:1}}</style>
 </head>
 <body>
 <header><div class="nav"><a class="brand" href="#" aria-label="ViCLUTCH トップ">Vi<span>CLUTCH</span></a><nav aria-label="メインナビゲーション"><a href="#school">杉戸町スクール</a><a href="#programs">レッスン</a><a href="#coach">コーチ</a><a href="#faq">よくある質問</a><a class="nav-cta" href="https://www.instagram.com/football_coach_yuu/" target="_blank" rel="noopener noreferrer">InstagramでDM相談 ↗</a></nav></div></header>
@@ -74,8 +116,8 @@
 希望日：
 気になっていること：
 体験料金・空き状況・持ち物を教えてください。</textarea><button class="btn primary" id="copy-inquiry" type="button" style="cursor:pointer;margin-top:14px;font-family:inherit">相談文をコピー</button><p id="copy-result" role="status" aria-live="polite" style="font-size:13px;margin:12px 0 0;color:var(--gold)"></p></div><div class="actions"><a class="btn primary" href="https://www.instagram.com/football_coach_yuu/" target="_blank" rel="noopener noreferrer">InstagramのDMでお問い合わせ ↗</a><a class="btn" href="https://lin.ee/N0gHi0z" target="_blank" rel="noopener noreferrer">Instagramを利用していない方はLINEへ ↗</a></div></div></section>
-</main>
-<footer><div class="wrap footer-row"><div><a class="brand" href="#">Vi<span>CLUTCH</span></a><p>サッカースクール・パーソナルレッスン</p></div><div><a class="text-link" href="#supporters">応援サポーター募集</a><br>© 2026 ViCLUTCH</div></div></footer>
+<section id="privacy" style="padding:45px 0"><div class="wrap"><details><summary>プライバシー・アクセス解析について</summary><p>当サイトは、サイトの利用状況を把握し、案内内容を改善するため、Google LLCのGoogle Analyticsを利用します。計測を許可した場合にのみGoogleの計測タグを読み込み、Cookieを使用して閲覧ページ、訪問状況、ブラウザーや端末の情報などを収集します。広告向けのGoogleシグナルと広告のパーソナライズは無効にしています。</p><p>氏名や相談文の内容をアクセス解析へ送信する設定は行いません。InstagramやLINEへのお問い合わせには、それぞれのサービスの規約・プライバシーポリシーが適用されます。</p><p>計測を許可しなくてもホームページをご利用いただけます。選択はこのブラウザーに180日間保存され、ページ下部の「アクセス解析の設定」から変更できます。ブラウザーのデータを削除すると選択もリセットされます。</p><p><a class="text-link" href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener noreferrer">Googleによるデータの利用について ↗</a><br><a class="text-link" href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener noreferrer">Google Analyticsオプトアウトについて ↗</a></p><p>この案内についてのお問い合わせは、ViCLUTCHのInstagramまたはLINEへお願いします。更新日：2026年10月19日</p></details><button id="analytics-settings" type="button" class="privacy-settings">アクセス解析の設定</button></div></section></main>
+<footer><div class="wrap footer-row"><div><a class="brand" href="#">Vi<span>CLUTCH</span></a><p>サッカースクール・パーソナルレッスン</p></div><div><a class="text-link" href="#supporters">応援サポーター募集</a><br>© 2026 ViCLUTCH</div></div></footer><aside id="analytics-choice" hidden aria-label="アクセス解析の選択"><div><strong>アクセス解析について</strong><p>より分かりやすいサイトにするため、Google Analyticsで閲覧状況を計測してもよいですか？ 許可しなくてもご利用いただけます。<a href="#privacy" class="text-link">詳しく見る</a></p></div><div class="analytics-buttons"><button id="analytics-allow" type="button" class="btn primary">計測を許可</button><button id="analytics-deny" type="button" class="btn">許可しない</button></div></aside>
 <a class="mobile-cta" href="https://www.instagram.com/football_coach_yuu/" target="_blank" rel="noopener noreferrer">InstagramのDMで体験相談 ↗</a>
 <script>
 if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
