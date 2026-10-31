@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>ViCLUTCH｜更新管理</title>
+<style>
+:root{--bg:#080d16;--panel:#111e31;--gold:#dab978;--muted:#b2bdd0}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f3ed;font:15px/1.8 "Yu Gothic",Meiryo,sans-serif}header,main{max-width:1050px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff20}h1{font-size:24px;margin:0}h2{font-size:23px;margin:0 0 16px}h3{font-size:18px;margin:18px 0 8px}p{margin:0 0 16px}a{color:var(--gold)}button{cursor:pointer;font:inherit;padding:10px 20px;border:1px solid var(--gold);background:transparent;color:var(--gold);min-height:44px}button.primary{background:var(--gold);color:var(--bg);font-weight:700}button:disabled{opacity:.45;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid #ffe0a3;outline-offset:3px}input,select,textarea{width:100%;padding:12px;background:var(--bg);border:1px solid #ffffff35;color:#f5f3ed;font:inherit;margin:5px 0 12px;max-width:100%}input[type=checkbox]{width:auto;margin-right:10px}label{display:block}textarea{min-height:110px;resize:vertical}.panel{padding:26px;background:var(--panel);border:1px solid #ffffff22;margin-bottom:24px}.muted{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}.tabs button[aria-pressed=true]{background:var(--gold);color:var(--bg)}[hidden]{display:none!important}.status{padding:14px;border-left:3px solid var(--gold);white-space:pre-wrap;background:#dab97812}.error{border-color:#ed8e98;color:#ffc7c7}.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}.preview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.preview img,.preview video{width:100%;height:auto;max-height:180px;object-fit:contain}.item{border-top:1px solid #ffffff20;padding:16px 0}.item h3{margin:0}.item button{font-size:12px;padding:6px 12px}.publish-bar{position:sticky;bottom:0;padding:18px;background:#080d16f5;border-top:1px solid #dab97866;display:flex;justify-content:space-between;align-items:center;gap:20px;z-index:2}.tag{font-size:11px;color:var(--gold);letter-spacing:.12em}details{padding:12px 0}summary{cursor:pointer;color:var(--gold)}ol{padding-left:22px}#change-review li{white-space:pre-wrap}footer{padding:24px;color:var(--muted);font-size:12px;text-align:center}@media(max-width:650px){header,main{padding:16px}.panel{padding:20px}.grid{grid-template-columns:1fr;gap:0}.preview{grid-template-columns:1fr 1fr}.publish-bar{align-items:stretch;flex-direction:column;gap:12px}h1{font-size:20px}header a{font-size:12px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style></head><body>
+<header><h1>ViCLUTCH 更新管理</h1><a href="index.html" target="_blank" rel="noopener noreferrer">ホームページを見る ↗</a></header><main>
+<section class="panel" id="connection"><span class="tag">START HERE</span><h2>管理画面に接続</h2><p>写真・動画の活動レポート、開催カレンダー、冬スクールの募集案内を更新できます。</p><p class="muted">更新用キーはこの画面を開いている間だけ保持し、保存しません。送信先はGitHub公式APIのみです。キーをこのチャットに送る必要はありません。</p><form id="connect-form"><label>GitHub更新用キー<input type="password" id="access-key" autocomplete="off" spellcheck="false" required placeholder="github_pat_…"></label><button type="submit" class="primary">接続する</button></form><details><summary>初めて使うときの設定</summary><ol><li>GitHubにログインし、<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Fine-grained tokenの作成画面</a>を開きます。</li><li>対象の所有者を footboll-Coach-yuu、リポジトリは「Only select repositories」から vi-clutch だけに限定します。</li><li>Repository permissionsの「Contents」を「Read and write」にし、有効期限を設定してキーを作成します。その他の追加権限は不要です。</li><li>作成されたキーを上の欄に貼り付けます。キーは他人に共有せず、GitHubの設定で管理してください。</li></ol><p class="muted">ファイルを直接開いた場合は接続できません。公開済みのHTTPS管理画面、またはローカル確認用のlocalhostで開いてください。</p></details></section>
+<p id="status" class="status" role="status" aria-live="polite">未接続です。初回はGitHub更新用キーの設定が必要です。</p>
+<div id="workspace" hidden>
+<div class="actions" style="justify-content:space-between;margin:24px 0"><p class="muted" id="connection-label"></p><button type="button" id="disconnect">接続を終了する</button></div>
+<nav class="tabs" aria-label="更新内容"><button data-tab="posts" aria-pressed="true">写真・動画</button><button data-tab="calendar" aria-pressed="false">開催カレンダー</button><button data-tab="winter" aria-pressed="false">冬スクール募集</button></nav>
+<section class="panel" id="tab-posts"><h2>今週の活動レポート</h2><form id="post-form"><div class="grid"><label>練習日<input id="post-date" type="date" required></label><label>カテゴリー<select id="post-category"><option value="school">ViCLUTCHスクール</option><option value="personal">パーソナルレッスン</option><option value="small">少人数レッスン</option><option value="londo">Londo Academy</option></select></label></div><label>タイトル<input id="post-title" maxlength="80" required placeholder="今週のトレーニング"></label><label>紹介文<textarea id="post-caption" maxlength="800" placeholder="取り組んだことや練習の様子を記入してください。"></textarea></label><label>写真・動画<input id="post-files" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple required></label><p class="muted">1記事につき6点まで。写真は自動で軽量化します。動画はMP4・WebMで1本25MBまで、1記事合計50MBまでです。大きな動画はスマホで短く切ってから選んでください。掲載してよい写真・動画をお選びください。</p><div id="post-preview" class="preview"></div><button type="submit">公開待ちの記事に追加</button></form><h3>登録済み・公開待ちの記事</h3><div id="post-list"></div></section>
+<section class="panel" id="tab-calendar" hidden><h2>開催予定を追加・修正</h2><p class="muted">通常スクールは毎週火・水17:30–18:30の基本枠が表示されます。休講日は「休講」を登録してください。冬スクールは1開催日ずつ登録するとカレンダーにも表示されます。</p><form id="event-form"><input type="hidden" id="event-id"><div class="grid"><label>開催日<input id="event-date" type="date" required></label><label>種類<select id="event-kind"><option value="winter">冬の特別スクール</option><option value="extra">通常・特別レッスン</option><option value="closed">休講</option></select></label><label>カテゴリー<select id="event-category"><option value="school">ViCLUTCHスクール</option><option value="personal">パーソナルレッスン</option><option value="small">少人数レッスン</option><option value="londo">Londo Academy</option></select></label><label>表示するタイトル<input id="event-title" maxlength="80" required placeholder="冬の特別スクール（少人数トレーニング）"></label><label>開始時間<input id="event-start" type="time"></label><label>終了時間<input id="event-end" type="time"></label><label>会場<input id="event-venue" maxlength="120"></label><label>定員<input id="event-capacity" maxlength="60" placeholder="例：各回6名"></label><label>料金<input id="event-price" maxlength="80" placeholder="例：1回2,000円"></label><label>申込締切<input id="event-deadline" maxlength="80"></label><label>受付状況<select id="event-status"><option>募集中</option><option>満席</option><option>開催予定</option><option>休講</option><option>受付終了</option></select></label></div><div class="actions"><button type="submit">予定を公開待ちに追加・保存</button><button type="button" id="event-reset">入力をリセット</button></div></form><h3>登録済み・公開待ちの予定</h3><div id="event-list"></div></section>
+<section class="panel" id="tab-winter" hidden><h2>冬スクールの募集案内</h2><p class="muted">未定の項目は空欄で保存してください。開催カレンダーには「開催カレンダー」から日付ごとに予定を登録します。</p><form id="winter-form"><label><input id="winter-enabled" type="checkbox" checked>冬スクールの募集欄を表示する</label><div class="grid"><label>開催日・期間<input id="winter-dates" maxlength="160"></label><label>時間<input id="winter-time" maxlength="100"></label><label>会場<input id="winter-venue" maxlength="120"></label><label>対象学年<input id="winter-target" maxlength="100"></label><label>定員<input id="winter-capacity" maxlength="80"></label><label>料金<input id="winter-price" maxlength="120"></label><label>申込締切<input id="winter-deadline" maxlength="100"></label></div><label>募集メッセージ<textarea id="winter-message" maxlength="800"></textarea></label><button type="submit">募集案内を公開待ちに保存</button></form></section>
+<section class="panel"><h2>公開前の確認</h2><p>「公開待ちに追加・保存」の段階では、ホームページはまだ変わりません。以下の内容を確認してから公開してください。</p><ul id="change-review"></ul><p class="muted">掲載を取り下げても、元のファイルやGitHubの変更履歴は残ります。この画面は完全削除を行いません。</p></section>
+<div class="publish-bar"><span id="dirty-status">公開待ちの変更はありません。</span><button type="button" class="primary" id="publish" disabled>確認した内容をホームページに公開</button></div>
+</div></main><footer>更新先：footboll-Coach-yuu / vi-clutch。公開反映には数分かかることがあります。</footer>
+<script>
+(() => {
+ 'use strict';
+ const REPO='/repos/footboll-Coach-yuu/vi-clutch',API='https://api.github.com',DATA='content.json';
+ const CATEGORIES={school:'ViCLUTCHスクール',personal:'パーソナルレッスン',small:'少人数レッスン',londo:'Londo Academy'};
+ const $=id=>document.getElementById(id),el=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e};
+ const today=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo'}).format(new Date());
+ const dateValid=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&Number.isFinite(new Date(s+'T12:00:00+09:00').getTime())&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo'}).format(new Date(s+'T12:00:00+09:00'))===s;
+ let token='',branch='',baseSha='',model=null,busy=false,changes=[],pending=new Map(),previewURLs=[];
+ const fresh=()=>({schemaVersion:1,posts:[],events:[],winter:{enabled:true,message:'日程・対象・料金などの詳細は、InstagramのDMでお問い合わせください。'}});
+ function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error)}
+ function lock(value){busy=value;document.querySelectorAll('#workspace button,#workspace input,#workspace select,#workspace textarea,#connect-form button').forEach(b=>b.disabled=value);$('publish').disabled=value||changes.length===0}
+ async function request(path,method='GET',body){
+  if(!path.startsWith(REPO+'/')&&path!==REPO)throw Error('更新先が正しくありません。');
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);
+  try{
+   const response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:controller.signal,credentials:'omit',cache:'no-store',redirect:'error'});
+   if(!response.ok){const err=Error(response.status===401?'更新用キーが無効または期限切れです。':response.status===403?'更新権限がありません。vi-clutchのContentsをRead and writeにしてください。':response.status===422||response.status===409?'別の更新と重なりました。入力内容を控え、接続し直してからやり直してください。':'GitHubとの通信に失敗しました（'+response.status+'）。');err.status=response.status;throw err}
+   return response.status===204?null:await response.json();
+  }catch(error){if(error.name==='AbortError')throw Error('通信が時間切れになりました。回線を確認して再試行してください。');throw error}finally{clearTimeout(timer)}
+ }
+ async function readData(ref){
+  try{const file=await request(REPO+'/contents/'+DATA+'?ref='+encodeURIComponent(ref));const bytes=Uint8Array.from(atob(file.content.replace(/\s/g,'')),c=>c.charCodeAt(0));const data=JSON.parse(new TextDecoder().decode(bytes));if(data.schemaVersion!==1||!Array.isArray(data.posts)||!Array.isArray(data.events))throw Error('更新データの形式を確認してください。');return data}
+  catch(error){if(error.status===404)return fresh();throw error}
+ }
+ function note(text){changes.push(text);renderReview()}
+ function renderReview(){const list=$('change-review');list.replaceChildren();changes.forEach(c=>list.append(el('li',c)));$('dirty-status').textContent=changes.length?changes.length+'件の変更が公開待ちです。':'公開待ちの変更はありません。';$('publish').disabled=busy||!changes.length}
+ const uid=()=>crypto.randomUUID();
+ function resetPreview(){previewURLs.forEach(u=>URL.revokeObjectURL(u));previewURLs=[];$('post-preview').replaceChildren()}
+ function renderLists(){
+  const posts=$('post-list');posts.replaceChildren();
+  [...model.posts].sort((a,b)=>b.date.localeCompare(a.date)).forEach(post=>{const item=el('article');item.className='item';item.append(el('h3',post.title),el('p',post.date+' / '+(CATEGORIES[post.category]||post.category)));const remove=el('button','掲載を取り下げる');remove.type='button';remove.addEventListener('click',()=>{model.posts=model.posts.filter(p=>p.id!==post.id);for(const media of post.media||[])pending.delete(media.path);note('記事の掲載を取り下げ：'+post.title);renderLists()});item.append(remove);posts.append(item)});
+  if(!model.posts.length)posts.append(el('p','記事はまだありません。'));
+  const events=$('event-list');events.replaceChildren();
+  [...model.events].sort((a,b)=>(a.date+(a.start||'')).localeCompare(b.date+(b.start||''))).forEach(event=>{const item=el('article');item.className='item';item.append(el('h3',event.title),el('p',event.date+' '+[event.start,event.end].filter(Boolean).join('–')+' / '+event.status));const edit=el('button','修正');edit.type='button';edit.addEventListener('click',()=>{for(const key of ['id','date','kind','category','title','start','end','venue','capacity','price','deadline','status'])$('event-'+key).value=event[key]||'';$('event-date').focus()});const remove=el('button','予定の掲載を取り下げる');remove.type='button';remove.addEventListener('click',()=>{model.events=model.events.filter(e=>e.id!==event.id);note('予定の掲載を取り下げ：'+event.date+' '+event.title);renderLists()});const actions=el('div');actions.className='actions';actions.append(edit,remove);item.append(actions);events.append(item)});
+  if(!model.events.length)events.append(el('p','追加の開催予定はまだありません。'));
+ }
+ function loadWinter(){const winter=model.winter||{};$('winter-enabled').checked=winter.enabled!==false;for(const key of ['dates','time','venue','target','capacity','price','deadline','message'])$('winter-'+key).value=winter[key]||''}
+ $('connect-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(busy)return;
+  if(location.protocol!=='https:'&&!['localhost','127.0.0.1'].includes(location.hostname)){status('公開されたHTTPSの管理画面を開いてください。ファイルを直接開いた状態では接続できません。',true);return}
+  token=$('access-key').value.trim();$('access-key').value='';if(!token)return;
+  lock(true);status('接続を確認しています…');
+  try{const repo=await request(REPO);branch=repo.default_branch;const ref=await request(REPO+'/git/ref/heads/'+encodeURIComponent(branch));baseSha=ref.object.sha;model=await readData(baseSha);changes=[];pending.clear();loadWinter();renderLists();$('workspace').hidden=false;$('connection').hidden=true;$('connection-label').textContent='接続先：footboll-Coach-yuu / vi-clutch';status('接続しました。内容を追加し、最後に公開してください。');renderReview()}
+  catch(error){token='';status(error.message,true)}finally{lock(false)}
+ });
+ $('disconnect').addEventListener('click',()=>{if(busy)return;if(changes.length&&!confirm('公開待ちの内容を破棄して接続を終了しますか？'))return;token='';model=null;pending.clear();changes=[];resetPreview();$('workspace').hidden=true;$('connection').hidden=false;status('接続を終了しました。更新用キーは保存していません。')});
+ document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));for(const name of ['posts','calendar','winter'])$('tab-'+name).hidden=name!==button.dataset.tab}));
+ $('post-date').value=today();$('event-date').value=today();
+ $('post-files').addEventListener('change',()=>{resetPreview();for(const file of [...$('post-files').files].slice(0,6)){const url=URL.createObjectURL(file);previewURLs.push(url);const view=el(file.type.startsWith('video/')?'video':'img');view.src=url;if(view.tagName==='VIDEO'){view.controls=true;view.preload='metadata'}else view.alt=file.name;$('post-preview').append(view)}});
+ async function prepare(file,date,id,index){
+  if(['image/jpeg','image/png','image/webp'].includes(file.type)){
+   let bitmap;
+   try{bitmap=await createImageBitmap(file)}catch{throw Error('写真を読み込めません：'+file.name)}
+   const scale=Math.min(1,1600/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#080d16';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.84));if(!blob)throw Error('写真の軽量化に失敗しました。');
+   return {path:'uploads/'+date+'/'+id+'-'+index+'.jpg',type:'image',width:canvas.width,height:canvas.height,blob};
+  }
+  if(['video/mp4','video/webm'].includes(file.type)){if(file.size>25*1024*1024)throw Error('動画は1本25MBまでです。スマホで短く切ってからお選びください。');return{path:'uploads/'+date+'/'+id+'-'+index+(file.type==='video/webm'?'.webm':'.mp4'),type:'video',blob:file}}
+  throw Error('対応していない形式です：'+file.name);
+ }
+ $('post-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||!model)return;const files=[...$('post-files').files],date=$('post-date').value,title=$('post-title').value.trim();
+  if(!dateValid(date)||!title){status('練習日とタイトルを入力してください。',true);return}
+  if(files.length<1||files.length>6||files.reduce((s,f)=>s+f.size,0)>50*1024*1024){status('写真・動画は1記事1〜6点、合計50MBまでです。',true);return}
+  lock(true);status('写真・動画を準備しています…');const id=uid();
+  try{const media=[];for(let i=0;i<files.length;i++)media.push(await prepare(files[i],date,id,i));media.forEach(m=>pending.set(m.path,m.blob));model.posts.push({id,date,title,caption:$('post-caption').value.trim(),category:$('post-category').value,createdAt:new Date().toISOString(),media:media.map(({blob,...m})=>({...m,alt:title}))});note('活動レポート追加：'+date+' '+title+'（写真・動画'+media.length+'点）');$('post-form').reset();$('post-date').value=today();resetPreview();renderLists();status('公開待ちの記事に追加しました。最後に「ホームページに公開」を押してください。')}
+  catch(error){status(error.message,true)}finally{lock(false)}
+ });
+ $('event-form').addEventListener('submit',event=>{
+  event.preventDefault();if(busy||!model)return;const date=$('event-date').value,title=$('event-title').value.trim(),start=$('event-start').value,end=$('event-end').value;
+  if(!dateValid(date)||!title){status('開催日とタイトルを入力してください。',true);return}
+  if(start&&end&&end<=start){status('終了時間は開始時間より後にしてください。',true);return}
+  const item={};for(const key of ['date','kind','category','title','start','end','venue','capacity','price','deadline','status'])item[key]=$('event-'+key).value.trim();item.id=$('event-id').value||uid();if(item.kind==='closed')item.status='休講';const index=model.events.findIndex(e=>e.id===item.id);if(index>=0)model.events[index]=item;else model.events.push(item);note('開催予定を保存：'+item.date+' '+item.title);$('event-form').reset();$('event-date').value=today();$('event-id').value='';renderLists();status('開催予定を公開待ちに保存しました。')
+ });
+ $('event-reset').addEventListener('click',()=>{$('event-form').reset();$('event-id').value='';$('event-date').value=today()});
+ $('winter-form').addEventListener('submit',event=>{event.preventDefault();if(busy||!model)return;const winter={enabled:$('winter-enabled').checked};for(const key of ['dates','time','venue','target','capacity','price','deadline','message'])winter[key]=$('winter-'+key).value.trim();model.winter=winter;note('冬スクールの募集案内を更新'+(winter.enabled?'':'（募集欄を非表示）'));status('募集案内を公開待ちに保存しました。')});
+ function base64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(Error('ファイルの読み取りに失敗しました。'));reader.readAsDataURL(blob)})}
+ $('publish').addEventListener('click',async()=>{
+  if(busy||!model||!changes.length)return;lock(true);
+  try{
+   if(!confirm('確認欄の変更をホームページに公開します。よろしいですか？'))return;
+   let ref=await request(REPO+'/git/ref/heads/'+encodeURIComponent(branch));if(ref.object.sha!==baseSha)throw Error('他の更新が先に公開されています。内容を控え、接続し直してください。');
+   const parent=await request(REPO+'/git/commits/'+baseSha),tree=[];let done=0;
+   for(const [path,blob] of pending){status('写真・動画をアップロード中 '+(++done)+' / '+pending.size+'。この画面を閉じないでください。');const created=await request(REPO+'/git/blobs','POST',{content:await base64(blob),encoding:'base64'});tree.push({path,mode:'100644',type:'blob',sha:created.sha})}
+   model.updatedAt=new Date().toISOString();const data=await request(REPO+'/git/blobs','POST',{content:JSON.stringify(model,null,2)+'\n',encoding:'utf-8'});tree.push({path:DATA,mode:'100644',type:'blob',sha:data.sha});
+   const nextTree=await request(REPO+'/git/trees','POST',{base_tree:parent.tree.sha,tree});const commit=await request(REPO+'/git/commits','POST',{message:'Update ViCLUTCH training reports and schedule',tree:nextTree.sha,parents:[baseSha]});
+   ref=await request(REPO+'/git/ref/heads/'+encodeURIComponent(branch));if(ref.object.sha!==baseSha)throw Error('公開直前に他の更新が入りました。内容を控え、接続し直してください。');
+   await request(REPO+'/git/refs/heads/'+encodeURIComponent(branch),'PATCH',{sha:commit.sha,force:false});baseSha=commit.sha;changes=[];pending.clear();renderReview();status('GitHubへ保存しました。公開反映には数分かかることがあります。ホームページを再読み込みして確認してください。')
+  }catch(error){status(error.message+'\n公開待ちの内容はこの画面に残っています。',true)}finally{lock(false)}
+ });
+ window.addEventListener('beforeunload',event=>{if(changes.length||busy){event.preventDefault();event.returnValue=''}});
+})();
+</script></body></html>
